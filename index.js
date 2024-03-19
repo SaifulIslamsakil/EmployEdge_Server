@@ -24,6 +24,7 @@ async function run() {
     try {
         // await client.connect();
         const UserCollection = client.db("EmployEdge").collection("User")
+        const AddWorkCollection = client.db("EmployEdge").collection("Work")
         app.post("/user", async (req, res) => {
             const userInfo = req.body
             const quray = { email: userInfo?.email }
@@ -68,7 +69,6 @@ async function run() {
         })
         app.put("/makeHr/:id", async (req, res)=>{
             const id = req.params.id
-            console.log(id)
             const quray = {_id: new ObjectId(id)}
             const update ={
                 $set:{
@@ -76,6 +76,11 @@ async function run() {
                 }
             }
             const result = await UserCollection.updateOne(quray, update)
+            res.send(result)
+        })
+        app.post("/addWork", async(req,res)=>{
+            const workInfo = req.body
+            const result = await AddWorkCollection.insertOne(workInfo)
             res.send(result)
         })
         // Send a ping to confirm a successful connection
