@@ -40,15 +40,41 @@ async function run() {
             const result = await UserCollection.find(quray).toArray()
             res.send(result)
         })
-        app.put("/Verified/:id", async(req,res)=>{
+        app.put("/Verified/:id", async (req, res) => {
             const id = req.params.id
-            const quray = {_id: new ObjectId(id)}
+            const quray = { _id: new ObjectId(id) }
             const update = {
-                $set:{
-                    Verified:true
+                $set: {
+                    Verified: true
                 }
             }
-            console.log(update)
+            const result = await UserCollection.updateOne(quray, update)
+            res.send(result)
+        })
+        app.get("/allEmployeeList", async (req, res) => {
+            const result = await UserCollection.find().toArray()
+            res.send(result)
+        })
+        app.put("/firehr/:id", async (req, res)=>{
+            const id = req.params.id
+            const quray = {_id: new ObjectId(id)}
+            const update ={
+                $set:{
+                    role:"Employee"
+                }
+            }
+            const result = await UserCollection.updateOne(quray, update)
+            res.send(result)
+        })
+        app.put("/makeHr/:id", async (req, res)=>{
+            const id = req.params.id
+            console.log(id)
+            const quray = {_id: new ObjectId(id)}
+            const update ={
+                $set:{
+                    role:"HR"
+                }
+            }
             const result = await UserCollection.updateOne(quray, update)
             res.send(result)
         })
