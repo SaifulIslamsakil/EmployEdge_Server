@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 5000;
 // pHOEy6ro4kyNFoVL
@@ -24,23 +24,40 @@ async function run() {
     try {
         // await client.connect();
         const UserCollection = client.db("EmployEdge").collection("User")
-        app.post("/user", async (req,res)=>{
+        app.post("/user", async (req, res) => {
             const userInfo = req.body
-            const quray = {email:userInfo?.email}
+            const quray = { email: userInfo?.email }
             const find = await UserCollection.findOne(quray)
-            if(find){
+            if (find) {
                 return
             }
             const result = await UserCollection.insertOne(userInfo)
             res.send(result)
             console.log(userInfo)
         })
+        app.get("/EmployeeList", async (req, res) => {
+            const quray = { role: "Employee" }
+            const result = await UserCollection.find(quray).toArray()
+            res.send(result)
+        })
+        app.put("/Verified/:id", async(req,res)=>{
+            const id = req.params.id
+            const quray = {_id: new ObjectId(id)}
+            const update = {
+                $set:{
+                    Verified:true
+                }
+            }
+            console.log(update)
+            const result = await UserCollection.updateOne(quray, update)
+            res.send(result)
+        })
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
-        
+
     }
 }
 run().catch(console.dir);
